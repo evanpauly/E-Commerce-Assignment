@@ -7,27 +7,22 @@ const { sequelize } = require('../../models/Product');
 // get all products
 router.get('/', (req, res) => {
   // find all products
-  Post.findAll({
+  Product.findAll({
     attributes: [
       'id',
       'product_name',
       'price',
-      'stock',
-      [sequelize.literal('(SELECT COUNT (*) FROM product WHERE product.category_id)')]
+      'stock'
     ],
-    order: [['created_at', 'DESC']],
+    order: [['product_name', 'DESC']],
     include: [
       {
         model: Category,
         attributes: ['id', 'category_name'],
-        include: {
-          model: Product,
-          attributes: ['product_name']
-        }
       },
       {
-        model: Product,
-        attributes: ['product_name']
+        model: Tag,
+        attributes: ['id', 'tag_name']
       }
     ]
   })
