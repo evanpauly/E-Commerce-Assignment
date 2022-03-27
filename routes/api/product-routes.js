@@ -8,13 +8,6 @@ const { sequelize } = require('../../models/Product');
 router.get('/', (req, res) => {
   // find all products
   Product.findAll({
-    /*attributes: [
-      'id',
-      'product_name',
-      'price',
-      'stock',
-      //[sequelize.literal(`(SELECT COUNT(*) FROM category WHERE category.product_id = product.id)`), 'productCount']
-    ],*/
     include: [
       {
         model: Category,
@@ -148,6 +141,21 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
+  product.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+  .then(dbProductData => {
+    if (!dbProductData) {
+      res.status(404).json({ message: 'No product found with this ID.' });
+      return;
+    }
+    res.json(dbProductData);
+  })
+  .catch(err => {
+    res.status(500).json(err);
+  });
 });
 
 module.exports = router;
